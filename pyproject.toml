@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "realcommercial"
+version = "0.1.0"
+description = ""
+authors = ["Temujin U. Lampasa <temujin.lampasa@obf.ateneo.edu>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+jupyterlab = "^3.5.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
