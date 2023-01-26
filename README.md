@@ -1,5 +1,5 @@
 # rea-scraper
-Scrape search results for property listings from <a href="https://realcommercial.com.au">realcommercial.au</a>. 
+Scrape search results for property listings from <a href="https://realcommercial.com.au">realcommercial.com.au</a>. 
 
 ## How to Use
 1. Install poetry:
