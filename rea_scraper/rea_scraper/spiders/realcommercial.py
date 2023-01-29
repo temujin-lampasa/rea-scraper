@@ -2,7 +2,7 @@ import re
 import json
 import bs4
 import scrapy
-from urllib.parse import urljoin
+from rea_scraper.items import RealEstateListing
 
 
 class SearchCategory:
@@ -23,6 +23,7 @@ class RealcommercialSpider(scrapy.Spider):
     custom_settings = {
         'CONCURRENT_REQUESTS': 1,
         'CONCURRENT_ITEMS' :1,
+        # 'CLOSESPIDER_PAGECOUNT': 10,
     }
 
     def start_requests(self):
@@ -47,8 +48,32 @@ class RealcommercialSpider(scrapy.Spider):
         data_script = next(s for s in scripts if "REA.pageData" in s.text)
         page_data_match = self.PAGE_DATA.search(data_script.text)
         page_data = json.loads(page_data_match.group(1))
-        for listing in page_data.get('exactMatchListings', list()):
-            yield listing | {'CATEGORY': category}
+        
+        for item in page_data.get('exactMatchListings', list()):
+            attributes = item.get('attributes', dict())
+            address = item.get('address', dict())
+            yield RealEstateListing(
+                id=item.get('id'),
+                title=item.get('title'),
+                product=item.get('product'),
+                daysActive=item.get('daysActive'),
+                hasTour=item.get('hasTour'),
+                pdpUrl=item.get('pdpUrl'),
+                tenureType=item.get('tenureTypeObject', {}).get('key'),
+                highlights=item.get('highlights', list()),
+                agencies=[agency.get('name') for agency in item.get('agencies') if agency.get('name')],
+                area=attributes.get('area'),
+                propertyTypes=attributes.get('propertyTypes'),
+                carSpaces=attributes.get('carSpaces'),
+                state=address.get('state'),
+                streetAddress=address.get('streetAddress'),
+                postcode=address.get('postcode'),
+                suburb=address.get('suburb'),
+                suburbAddress=address.get('suburbAddress'),
+                price=item.get('details', dict()).get('price'),
+                searchCategory=category,
+            )
+
         next_page_btn = soup.find('a', {'aria-label': 'next'})
         if next_page_btn:
             rel_path = next_page_btn.get('href', None)
