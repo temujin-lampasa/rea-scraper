@@ -3,9 +3,9 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
-import re
-from typing import List, ClassVar
+from typing import List
 from dataclasses import dataclass, fields
+from rea_scraper.settings import CSV_SEP, LIST_SEP
 
 @dataclass
 class RealEstateListing:
@@ -33,10 +33,6 @@ class RealEstateListing:
     # Sort
     searchCategory: str
 
-    LIST_SEPARATOR: ClassVar[str] = "@@@"
-    CSV_SEPARATOR: ClassVar[str] = "|"
-    LIST_REGEX = re.compile(LIST_SEPARATOR)
-    CSV_REGEX = re.compile(CSV_SEPARATOR)
 
     def __post_init__(self) -> None:
         """Clean field values.
@@ -49,15 +45,12 @@ class RealEstateListing:
             if isinstance(field_value, list):
                 if len(field_value) == 0:
                     setattr(self, field.name, None)
-                field_list_sep_removed = [self.LIST_REGEX.sub("", string) for string in field_value]
-                field_csv_sep_removed = [self.CSV_REGEX.sub("", string) for string in field_list_sep_removed]
+                field_list_sep_removed = [string.replace(LIST_SEP, "") for string in field_value]
+                field_csv_sep_removed = [string.replace(CSV_SEP, "") for string in field_list_sep_removed]
                 setattr(
                     self, field.name,
-                    self.LIST_SEPARATOR.join(field_csv_sep_removed)
+                    LIST_SEP.join(field_csv_sep_removed)
                 )
             if isinstance(field_value, str):
-                setattr(
-                    self, field.name,
-                    self.CSV_REGEX.sub("", field_value)
-                )
+                setattr(self, field.name, field_value.replace(CSV_SEP, ""))
 

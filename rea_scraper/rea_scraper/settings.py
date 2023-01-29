@@ -13,6 +13,12 @@ SPIDER_MODULES = ['rea_scraper.spiders']
 NEWSPIDER_MODULE = 'rea_scraper.spiders'
 
 
+CSV_SEP = "|"
+LIST_SEP = "@@@"
+FEED_EXPORTERS = {
+    'csv': 'rea_scraper.exporters.CsvCustomSeperator'
+}
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'rea_scraper (+http://www.yourdomain.com)'
 

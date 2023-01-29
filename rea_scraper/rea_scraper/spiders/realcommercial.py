@@ -23,7 +23,7 @@ class RealcommercialSpider(scrapy.Spider):
     custom_settings = {
         'CONCURRENT_REQUESTS': 1,
         'CONCURRENT_ITEMS' :1,
-        # 'CLOSESPIDER_PAGECOUNT': 10,
+        # 'CLOSESPIDER_PAGECOUNT': 20,
     }
 
     def start_requests(self):
